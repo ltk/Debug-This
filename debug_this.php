@@ -19,6 +19,10 @@ $debug_these = $debug_these_errors = array();
 
 
 function debug_this($var = false, $var_name = null, $showHtml = true, $showFrom = true) {
+		if(!$var){
+			$var = $GLOBALS;
+			$var_name = 'All Global Variables... Yikes';
+		}
 		global $debug_these;
 		$file = '';
 		$line = '';
