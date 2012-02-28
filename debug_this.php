@@ -14,8 +14,9 @@ Version: 0.1
 require_once('String.php');
 require_once('Debugger.php');
 
-global $debug_these;
-$debug_these = array();
+global $debug_these, $debug_these_errors;
+$debug_these = $debug_these_errors = array();
+
 
 function debug_this($var = false, $var_name = null, $showHtml = true, $showFrom = true) {
 		global $debug_these;
@@ -103,9 +104,8 @@ function debug_these_output(){
 		margin-top:37px;
 	}
 	</style>
-	";
-
-	
+	";	
+	}
 }
 function debug_these_js_output(){
 	echo "
@@ -119,11 +119,32 @@ function debug_these_js_output(){
 		})(jQuery);	
 	</script>
 	";
-	}
 }
 
-add_action( 'get_header', 'debug_these_output' );
+function debug_this_error_handler( $errno, $errstr, $errfile = null, $errline = null, $errcontext = null){
+	global $debug_these_errors;
+	$debug_these_errors[] = sprintf('Error #%s: %s in %s - Line %s', $errno, $errstr, $errfile, $errline);
+	return true;
+}
+function debug_these_error_output(){
+	global $debug_these_errors;
+	if(count($debug_these_errors)>0)
+		debug_this($debug_these_errors, 'Errors on Page');
+}
+
+function debug_this_exception_handler( $exception ){
+	echo "Uncaught exception: " , $exception->getMessage(), "\n";
+}
+
+set_error_handler('debug_this_error_handler', E_ALL);
+set_exception_handler ( 'debug_this_exception_handler' );
+add_action( 'admin_footer', 'debug_these_error_output' );
+add_action( 'get_footer', 'debug_these_error_output' );
+
+add_action( 'get_footer', 'debug_these_output' );
 add_action( 'get_footer', 'debug_these_js_output' );
-add_action( 'admin_head', 'debug_these_output' );
+add_action( 'admin_footer', 'debug_these_output' );
 add_action( 'admin_footer', 'debug_these_js_output' );
+
+
 ?>
