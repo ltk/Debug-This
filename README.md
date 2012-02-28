@@ -18,10 +18,13 @@ Copy debug-this.php into your plugins directory and activate the plugin through 
 
 ### debug_this()
 
-    #passing an argument outputs the formatted value of the argument
+    #Passing an argument outputs the formatted value of the argument
     debug_this($post);
 
-    #omitting the argument calls debug_this on $GLOBALS, which will display every variable with a global scope
+    #You can also pass a second argument to give yourself a reminder of which variable you're debugging, or to give youself a quick reminder
+    debug_this($post, 'Make sure this returns false!');
+
+    #Omitting the argument calls debug_this on $GLOBALS, which will display every variable with a global scope
     debug_this();
 
 License
