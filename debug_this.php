@@ -14,7 +14,7 @@ Version: 0.1
 global $debug_these;
 $debug_these = array();
 
-function debug_this($var = false, $showHtml = true, $showFrom = true) {
+function debug_this($var = false, $var_name = null, $showHtml = true, $showFrom = true) {
 		global $debug_these;
 		$file = '';
 		$line = '';
@@ -42,7 +42,11 @@ TEXT;
 		if (php_sapi_name() == 'cli' || $showHtml === false) {
 			$template = $text;
 			if ($showFrom) {
-				$lineInfo = sprintf('%s (line %s)', $file, $line);
+				if($var_name){
+					$lineInfo = sprintf('%s (line %s): %s', $file, $line, $var_name);
+				} else {
+					$lineInfo = sprintf('%s (line %s)', $file, $line);
+				}	
 			}
 		}
 		if ($showHtml === null && $template !== $text) {
@@ -53,7 +57,12 @@ TEXT;
 			$template = $html;
 			//$var = h($var);
 			if ($showFrom) {
-				$lineInfo = sprintf('<span><strong>%s</strong> (line <strong>%s</strong>)</span>', $file, $line);
+				if($var_name){
+					$lineInfo = sprintf('<span><strong>%s</strong> (line <strong>%s</strong>): %s</span>', $file, $line, $var_name);
+				} else {
+					$lineInfo = sprintf('<span><strong>%s</strong> (line <strong>%s</strong>)</span>', $file, $line);
+				}	
+				
 			}
 		}
 		$debug_these[] = sprintf($template, $lineInfo, $var);
@@ -70,6 +79,7 @@ function debug_these_output(){
 		echo $output;
 		echo "
 	<style type='text/css'>
+
 	.debug-this-output {
 		margin:10px;
 		padding:10px;
@@ -85,6 +95,9 @@ function debug_these_output(){
 		margin-bottom:5px;
 		padding-bottom:5px;
 		border-bottom:1px solid #666;
+	}
+	.wp-admin .debug-this-output {
+		margin-top:37px;
 	}
 	</style>
 	";
@@ -108,4 +121,6 @@ function debug_these_js_output(){
 
 add_action( 'get_header', 'debug_these_output' );
 add_action( 'get_footer', 'debug_these_js_output' );
+add_action( 'admin_head', 'debug_these_output' );
+add_action( 'admin_footer', 'debug_these_js_output' );
 ?>
