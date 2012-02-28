@@ -11,6 +11,9 @@ Author: Lawson Kurtz
 Version: 0.1
 
 */
+require_once('String.php');
+require_once('Debugger.php');
+
 global $debug_these;
 $debug_these = array();
 
