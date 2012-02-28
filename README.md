@@ -21,8 +21,15 @@ Copy debug-this.php into your plugins directory and activate the plugin through 
     #Passing an argument outputs the formatted value of the argument
     debug_this($post);
 
-    #You can also pass a second argument to give yourself a reminder of which variable you're debugging, or to give youself a quick reminder
+    #You can also pass a second argument to let yourself know which variable (and at which condition) you're debugging, or to give youself a quick reminder
     debug_this($post, 'Make sure this returns false!');
+
+    #Same as above, with some added craziness
+    if ( have_posts() ) :
+    	while ( have_posts() ) :
+    		debug_this($post, 'Post ID ' . $post->ID);
+    	endwhile;
+    endif;
 
     #Omitting the argument calls debug_this on $GLOBALS, which will display every variable with a global scope
     debug_this();
